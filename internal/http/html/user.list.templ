@@ -1,0 +1,104 @@
+package html
+
+import (
+	"github.com/falagansoftware/auto-repair/internal"
+	"github.com/falagansoftware/auto-repair/pkg/translator"
+)
+
+var fields = []string{"name", "surname", "email", "created_at", "updated_at", "active"}
+
+templ UserList(users []*gohtmx.User, sortField string, sortOrder string, i18n translator.LangTranslations) {
+	@Layout() {
+		<div class="grid grid-cols-1">
+			<div class="grid grid-cols-1 p-4 sm:flex sm:justify-between sm:pb-3">
+				<h4 class="text-2xl font-extrabold align-middle pb-2 sm:pb-0">{ i18n["users"] }</h4>
+				@UsersGlobalSearch()
+			</div>
+			<div class="w-full overflow-auto h-[calc(100vh-11.4rem)]">
+				<table id="users-list" class="table-auto">
+					@UserListHeader(fields, sortField, sortOrder, i18n)
+					@UserListBody(users)
+				</table>
+			</div>
+		</div>
+	}
+}
+
+templ UserListHeader(fields []string, sortField string, order string, i18n translator.LangTranslations) {
+	<thead>
+		<tr class="h-20 border-b">
+			<th class="min-w-16 stiky top-0 bg-white"></th>
+			for _, field := range fields {
+				if field == sortField {
+					if order == "ASC" {
+						<th class={ "text-left min-w-44 sm:min-w-64 stiky top-0 bg-white",templ.KV("hidden sm:table-cell", field != "name" && field != "surname") } hx-get={ "/users/filter?sort=" + field + "&order=DESC" } hx-trigger="click" hx-target="#users-list" hx-swap="outerHTML">
+							<span class="flex justify-between align-middle">
+								<h2>{ i18n[field] }</h2>
+								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-4 mt-1">
+									<path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18"></path>
+								</svg>
+							</span>
+						</th>
+					} else {
+						<th class={ "text-left min-w-44 sm:min-w-64 stiky top-0 bg-white",templ.KV("hidden sm:table-cell", field != "name" && field != "surname") } hx-get={ "/users/filter" } hx-trigger="click" hx-target="#users-list" hx-swap="outerHTML">
+							<span class="flex justify-between align-middle">
+								<h2>{ i18n[field] }</h2>
+								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-4 mt-1">
+									<path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3"></path>
+								</svg>
+							</span>
+						</th>
+					}
+				} else {
+					<th class={ "text-left min-w-44 sm:min-w-64 stiky top-0 bg-white",templ.KV("hidden sm:table-cell", field != "name" && field != "surname") } hx-get={ "/users/filter?sort=" + field + "&order=ASC" } hx-trigger="click" hx-target="#users-list" hx-swap="outerHTML">
+						<h2>{ i18n[field] }</h2>
+					</th>
+				}
+			}
+		</tr>
+	</thead>
+}
+
+templ UserListBody(users []*gohtmx.User) {
+	<tbody>
+		for _, user := range users {
+			<tr class="h-20 border-b hover:bg-sky-800 cursor-pointer">
+				<td class="text-left">
+					<svg hx-delete xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"></path>
+					</svg>
+				</td>
+				<td hidden value={ user.Uid }></td>
+				<td class="text-left">{ user.Name }</td>
+				<td class="text-left">{ user.Surname }</td>
+				<td class="text-left hidden sm:table-cell">{ user.Email }</td>
+				<td class="text-left hidden sm:table-cell">{ user.CreatedAt.Format("02/01/06 15:04") }</td>
+				<td class="text-left hidden sm:table-cell">{ user.UpdatedAt.Format("02/01/06 15:04") }</td>
+				if user.Active {
+					<td class="text-left hidden sm:table-cell">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
+							<path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
+						</svg>
+					</td>
+				} else {
+					<td class="text-left hidden sm:table-cell">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+							<path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
+						</svg>
+					</td>
+				}
+			</tr>
+		}
+	</tbody>
+}
+
+templ UserListSync(users []*gohtmx.User, sortField string, sortOrder string, i18n translator.LangTranslations) {
+	<table id="users-list" class="table-fixed">
+		@UserListHeader(fields, sortField, sortOrder, i18n)
+		@UserListBody(users)
+	</table>
+}
+
+templ UsersGlobalSearch() {
+	<input type="search" name="search" hx-post="users/search" hx-trigger="input changed delay:500ms, search" hx-target="#users-list" hx-swap="outerHTML" placeholder="Buscar..."/>
+}
