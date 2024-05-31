@@ -1,0 +1,39 @@
+package html
+
+templ Layout() {
+	@Index() {
+		<div class="w-full min-h-screen">
+			<!-- Header -->
+			@Header()
+			<!-- Middle Container -->
+			<div class="grow">
+				<div class="container mx-auto pt-0 sm:pt-8">
+					{ children... }
+				</div>
+			</div>
+			// <!-- Footer -->
+			// @Footer()
+		</div>
+	}
+}
+
+templ Header() {
+	<header class="h-20 bg-sky-800 text-white p-2 flex justify-between items-center">
+		<h3>auto-repair6</h3>
+		<h3>options</h3>
+	</header>
+}
+
+// templ Footer() {
+// 	<footer class="bg-gray-800 text-white py-4">
+// 		<div class="container mx-auto">
+// 			<a href="#" class="footer__link">About</a>
+// 			<a href="#" class="footer__link">Terms of Service</a>
+// 			<a href="#" class="footer__link">Privacy Policy</a>
+// 			<a href="#" class="footer__link">Help Center</a>
+// 			<p>Company Name</p>
+// 			<p>123 Main Street, City, Country</p>
+// 			<small>&copy; 2024 Company Name. All rights reserved.</small>
+// 		</div>
+// 	</footer>
+// }
