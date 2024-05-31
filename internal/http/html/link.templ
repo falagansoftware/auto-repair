@@ -1,0 +1,15 @@
+package html
+
+templ Link(text, href, testId string) {
+	<a class="inline-block align-baseline font-bold text-sm text-sky-800 hover:text-sky-800" href={ templ.URL(hrefValue(href)) } data-testid={ testId }>
+		{ text }
+	</a>
+}
+
+func hrefValue(href string) string {
+	if href != "" {
+		return href
+	} else {
+		return "#"
+	}
+}

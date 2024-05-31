@@ -1,0 +1,12 @@
+package html
+
+templ FormInput(id, typee, placeholder, testId string) {
+	<input
+		class="w-full py-2 px-3 text-black focus:ring-gray-500 focus:border-gray-500"
+		id={ id }
+		data-testid={ testId }
+		name={ id }
+		type={ typee }
+		placeholder={ placeholder }
+	/>
+}

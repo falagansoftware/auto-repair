@@ -1,0 +1,37 @@
+package html
+
+import (
+	"github.com/falagansoftware/auto-repair/pkg/translator"
+)
+
+templ SignUp(i18n translator.LangTranslations) {
+	@Index() {
+		<div class="grid grid-cols-1 place-content-center min-h-screen">
+			<div class="max-w-md m-auto">
+				<h1 class="text-sky-800 mb-6 text-6xl font-extrabold text-center">{ i18n["app-name"] }</h1>
+				<h1 class="text-gray-500 mb-6 text-4xl text-center">{ i18n["signup"] }</h1>
+				<form hx-post="/signup">
+					<div class="mb-4">
+						@FormInput("name", "text", i18n["name"], "signup-name")
+					</div>
+					<div class="mb-4">
+						@FormInput("surname", "text", i18n["surname"], "signup-surname")
+					</div>
+					<div class="mb-4">
+						@FormInput("email", "text", i18n["email"], "signup-email")
+					</div>
+					<div class="mb-4">
+						@FormInput("password", "password", i18n["password"], "signup-password")
+					</div>
+					<div class="mb-6">
+						@FormInput("confirm-password", "password", i18n["confirm-password"], "signup-confirm-password")
+					</div>
+					<div class="flex items-center justify-between">
+						@Button(i18n["register"], "submit", "signup-button")
+						@Link(i18n["already-signup"], "/signin", "signup-signin-link")
+					</div>
+				</form>
+			</div>
+		</div>
+	}
+}
