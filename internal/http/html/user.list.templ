@@ -7,7 +7,7 @@ import (
 
 var fields = []string{"name", "surname", "email", "created_at", "updated_at", "active"}
 
-templ UserList(users []*gohtmx.User, sortField string, sortOrder string, i18n translator.LangTranslations) {
+templ UserList(users []*autorepair.User, sortField string, sortOrder string, i18n translator.LangTranslations) {
 	@Layout() {
 		<div class="grid grid-cols-1">
 			<div class="grid grid-cols-1 p-4 sm:flex sm:justify-between sm:pb-3">
@@ -59,7 +59,7 @@ templ UserListHeader(fields []string, sortField string, order string, i18n trans
 	</thead>
 }
 
-templ UserListBody(users []*gohtmx.User) {
+templ UserListBody(users []*autorepair.User) {
 	<tbody>
 		for _, user := range users {
 			<tr class="h-20 border-b hover:bg-sky-800 cursor-pointer">
@@ -92,7 +92,7 @@ templ UserListBody(users []*gohtmx.User) {
 	</tbody>
 }
 
-templ UserListSync(users []*gohtmx.User, sortField string, sortOrder string, i18n translator.LangTranslations) {
+templ UserListSync(users []*autorepair.User, sortField string, sortOrder string, i18n translator.LangTranslations) {
 	<table id="users-list" class="table-fixed">
 		@UserListHeader(fields, sortField, sortOrder, i18n)
 		@UserListBody(users)

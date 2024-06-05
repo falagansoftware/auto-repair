@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	gohtmx "github.com/falagansoftware/auto-repair/internal"
+	autorepair "github.com/falagansoftware/auto-repair/internal"
 	html "github.com/falagansoftware/auto-repair/internal/http/html"
 )
 
@@ -32,7 +32,7 @@ func (s *Server) handleUserList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Render Users
-	view := html.UserList(users, filter.Sort, filter.Order, s.i18n.LangT(lang))
+	view := html.UserList(users, filter.Sort, filter.Order, s.I18n.LangT(lang))
 	err = view.Render(r.Context(), w)
 	if err != nil {
 		log.Printf("Internal Server Error: %v", err)
@@ -53,7 +53,7 @@ func (s *Server) handleUserListFilter(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Render Users
-	view := html.UserListSync(users, filter.Sort, filter.Order, s.i18n.LangT(lang))
+	view := html.UserListSync(users, filter.Sort, filter.Order, s.I18n.LangT(lang))
 	err = view.Render(r.Context(), w)
 	if err != nil {
 		log.Printf("Internal Server Error: %v", err)
@@ -73,7 +73,7 @@ func (s *Server) handleUserListSearch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Render Users
-	view := html.UserListSync(users, "", "", s.i18n.LangT(lang))
+	view := html.UserListSync(users, "", "", s.I18n.LangT(lang))
 	err = view.Render(r.Context(), w)
 	if err != nil {
 		log.Printf("Internal Server Error: %v", err)
@@ -83,9 +83,9 @@ func (s *Server) handleUserListSearch(w http.ResponseWriter, r *http.Request) {
 
 // Helpers
 
-func newUserFilters(r *http.Request) *gohtmx.UserFilters {
+func newUserFilters(r *http.Request) *autorepair.UserFilters {
 	// Filters
-	filter := &gohtmx.UserFilters{}
+	filter := &autorepair.UserFilters{}
 
 	limit, err := strconv.Atoi(r.URL.Query().Get("limit"))
 

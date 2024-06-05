@@ -1,4 +1,4 @@
-package gohtmx
+package autorepair
 
 import (
 	"context"
@@ -6,20 +6,35 @@ import (
 )
 
 type User struct {
-	Uid       string
-	Name      string
-	Surname   string
-	Email     string
-	Active    bool
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	Uid       string    `json:"uid"`
+	Name      string    `json:"name"`
+	Surname   string    `json:"surname"`
+	Email     string    `json:"email"`
+	Active    bool      `json:"active"`
+	Password  string    `json:"password"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+}
+
+type UserCreate struct {
+	Name            string `json:"name"`
+	Surname         string `json:"surname"`
+	Email           string `json:"email"`
+	Password        string `json:"password"`
+	ConfirmPassword string `json:"confirm-password"`
 }
 
 type UserUpdate struct {
-	Name    *string
-	Surname *string
-	Email   *string
-	Active  bool
+	Name     *string
+	Surname  *string
+	Email    *string
+	Active   bool
+	Password *string
+}
+
+type UserLogin struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 type UserFilters struct {
@@ -36,7 +51,7 @@ type UserFilters struct {
 }
 
 type UserService interface {
-	CreateUser(ctx context.Context, user *User) (*User, error)
+	CreateUser(ctx context.Context, user *UserCreate) error
 	FindUserByUid(ctx context.Context, uid string) (*User, error)
 	FindUsers(ctx context.Context, filters *UserFilters) ([]*User, error)
 	FindUsersGlobally(ctx context.Context, search *string) ([]*User, error)
