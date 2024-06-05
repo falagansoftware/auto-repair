@@ -32,3 +32,54 @@ th {
   top: 0;
   background-color: #f1f1f1;
 }
+
+/* Notifications */
+#notifications {
+  animation: fadeinout 10s linear forwards;
+}
+
+.notification-progress {
+  animation: progressBar 8s linear forwards;
+}
+
+@keyframes fadein {
+  from {
+    top: 0;
+    opacity: 0;
+  }
+
+  to {
+    top: 5rem;
+    opacity: 1;
+  }
+}
+
+@keyframes fadeinout {
+
+  0% {
+    opacity: 0;
+  }
+
+  15% {
+    opacity: 1;
+  }
+
+  80% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+
+}
+
+@keyframes progressBar {
+  0% {
+    width: 0;
+  }
+
+  100% {
+    width: 100%;
+  }
+}
