@@ -80,7 +80,7 @@ test/cover:
 
 ## build: build the application
 .PHONY: build/go
-build: 
+build/go: 
 	# building go
 	go build -o=/tmp/bin/${BINARY_NAME} ${MAIN_PACKAGE_PATH}
 
@@ -98,7 +98,7 @@ run/live:
 		--build.delay "1000" \
 		--build.exclude_dir "tmp" \
 		--build.exclude_regex "_templ.go" \
-		--build.include_ext "go, templ" \
+		--build.include_ext "go, templ, css" \
 		--misc.clean_on_exit "true"
 
 # ==================================================================================== #
