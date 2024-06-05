@@ -5,9 +5,11 @@ import (
 	"os"
 	"strconv"
 
-	gohtmx "github.com/falagansoftware/auto-repair/internal"
+	autorepair "github.com/falagansoftware/auto-repair/internal"
 	"github.com/falagansoftware/auto-repair/internal/http"
 	"github.com/falagansoftware/auto-repair/internal/postgres"
+	"github.com/falagansoftware/auto-repair/pkg/translator"
+	"github.com/go-playground/validator"
 )
 
 func main() {
@@ -18,8 +20,11 @@ func main() {
 type Main struct {
 	DB         *postgres.DB
 	HTTPServer *http.Server
-	// Expose Services to e2e test
-	UserService gohtmx.UserService
+	// Epoxose common services to test
+	I18n      *translator.Translator
+	Validator *validator.Validate
+	// Expose domain services to test
+	UserService autorepair.UserService
 }
 
 type Config struct {
@@ -39,8 +44,12 @@ type HTTPConfig struct {
 func NewMain() *Main {
 	config := NewConfig()
 	return &Main{
-		DB:         postgres.NewDB(config.DB.Dsn),
-		HTTPServer: http.NewServer(config.HTTPServer.Address, config.HTTPServer.Port, http.WithTimeout(1000)),
+		DB: postgres.NewDB(config.DB.Dsn),
+		HTTPServer: http.NewServer(
+			config.HTTPServer.Address,
+			config.HTTPServer.Port,
+			http.WithTimeout(1000),
+		),
 	}
 }
 
@@ -50,7 +59,12 @@ func (m *Main) Run() {
 		fmt.Println("Error opening database:", err)
 		return
 	}
+	m.I18n = translator.NewTranslator(translator.WithDefaultLang("es-es"))
+	m.Validator = validator.New()
 	m.UserService = postgres.NewUserService(m.DB)
+	// Re attach for testing porpoises
+	m.HTTPServer.I18n = m.I18n
+	m.HTTPServer.Validator = m.Validator
 	m.HTTPServer.UserService = m.UserService
 	err = m.HTTPServer.ListenAndServe()
 	if err != nil {

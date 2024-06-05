@@ -1,0 +1,37 @@
+package html
+
+import (
+	"github.com/falagansoftware/auto-repair/pkg/translator"
+	"fmt"
+)
+
+templ SignIn(lang string, i18n translator.LangTranslations) {
+	@Index() {
+		@SignInPartial(lang, i18n)
+	}
+}
+
+templ SignInPartial(lang string, i18n translator.LangTranslations) {
+	<div class="grid grid-cols-1 place-content-center min-h-screen">
+		<div class="max-w-md m-auto">
+			<h1 class="text-sky-800 mb-6 text-6xl font-extrabold text-center">{ i18n["app-name"] }</h1>
+			<h1 class="text-gray-500 mb-6 text-4xl text-center">{ i18n["signin"] }</h1>
+			<form hx-post="/signin" hx-ext="json-enc">
+				<div class="mb-4">
+					@FormInput("email", "text", i18n["email"], "signup-email")
+				</div>
+				<div class="mb-4">
+					@FormInput("password", "password", i18n["password"], "signup-password")
+				</div>
+				<div class="flex items-center justify-between">
+					@Button(i18n["signin"], "submit", "signin-button")
+					if lang != "" {
+						@Link(i18n["not-signup"], fmt.Sprintf("/signup?lang=%s", lang), "signin-signup-link")
+					} else {
+						@Link(i18n["not-signup"], "/signup", "signin-signup-link")
+					}
+				</div>
+			</form>
+		</div>
+	</div>
+}

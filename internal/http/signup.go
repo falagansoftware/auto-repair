@@ -1,10 +1,14 @@
 package http
 
 import (
+	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
+	autorepair "github.com/falagansoftware/auto-repair/internal"
 	"github.com/falagansoftware/auto-repair/internal/http/html"
+	"github.com/falagansoftware/auto-repair/pkg/crypt"
 )
 
 // Routes
@@ -17,49 +21,47 @@ func (s *Server) registerSignUpRoutes() {
 // Handlers
 
 func (s *Server) handleSignUp(w http.ResponseWriter, r *http.Request) {
-	//Lang
+	// lang
 	lang := r.URL.Query().Get("lang")
-	// Render Users
-	view := html.SignUp(s.i18n.LangT(lang))
+	// r ender Users
+	view := html.SignUp(lang, s.I18n.LangT(lang))
 	err := view.Render(r.Context(), w)
 	if err != nil {
 		log.Printf("Internal Server Error: %v", err)
-		return
 	}
 }
 
 func (s *Server) handleSignUpData(w http.ResponseWriter, r *http.Request) {
+	// lang
+	lang := r.URL.Query().Get("lang")
 	// get post payload
-	err := r.ParseForm()
+	var user autorepair.UserCreate
+	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		log.Printf("Error parsing form: %v", err)
 	}
-	// get form values
-	name := r.FormValue("name")
-	Surname := r.FormValue("surname")
-	email := r.FormValue("email")
-	password := r.FormValue("password")
-	confirmPassword := r.FormValue("confirm_password")
-	// validate form values
-	if name == "" || Surname == "" || email == "" || password == "" || confirmPassword == "" {
-		log.Printf("Error: Empty form values")
-		http.Redirect(w, r, "/signup", http.StatusSeeOther)
-		return
+	// validate
+	err = s.Validator.Struct(user)
+	if err != nil {
+		log.Printf("Error validating user: %v", err)
 	}
-	if password != confirmPassword {
-		log.Printf("Error: Passwords do not match")
-		http.Redirect(w, r, "/signup", http.StatusSeeOther)
-		return
+	// Hash password
+	hash, err := crypt.HashPassword(user.Password)
+	if err != nil {
+		log.Printf("Error hashing user pass: %v", err)
 	}
+	user.Password = hash
 	// create user
-	user := s.UserService.CreateUser(name, Surname, email, password)
-	// redirect to login
-
-	// Render Users
-	view := html.SignUp(s.i18n.LangT(lang))
-	err := view.Render(r.Context(), w)
+	err = s.UserService.CreateUser(r.Context(), &user)
+	if err != nil {
+		log.Printf("Error creating user: %v", err)
+	}
+	// render response
+	w.Header().Set("HX-Replace-Url", fmt.Sprintf("/signin?lang=%s", lang))
+	view := html.SignUpSuccess(lang, s.I18n.LangT(lang))
+	err = view.Render(r.Context(), w)
 	if err != nil {
 		log.Printf("Internal Server Error: %v", err)
-		return
 	}
+
 }

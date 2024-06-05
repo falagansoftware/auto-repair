@@ -6,8 +6,9 @@ import (
 	"strconv"
 	"time"
 
-	gohtmx "github.com/falagansoftware/auto-repair/internal"
+	autorepair "github.com/falagansoftware/auto-repair/internal"
 	"github.com/falagansoftware/auto-repair/pkg/translator"
+	"github.com/go-playground/validator"
 
 	"github.com/gorilla/mux"
 )
@@ -17,9 +18,11 @@ type Server struct {
 	router  *mux.Router
 	Address string
 	Port    int
-	i18n    *translator.Translator
-	// Services used in routes
-	UserService gohtmx.UserService
+	// Common services used in routes
+	I18n      *translator.Translator
+	Validator *validator.Validate
+	// Domain services used in routes
+	UserService autorepair.UserService
 }
 
 type Option func(*Server)
@@ -30,21 +33,24 @@ func NewServer(address string, port int, options ...Option) *Server {
 		router:  mux.NewRouter(),
 		Address: address,
 		Port:    port,
-		i18n:    translator.NewTranslator("./i18n", translator.WithDefaultLang("en-en")),
 	}
-	// Server options
+	// server options
 	for _, option := range options {
 		option(s)
 	}
-	// Handle if Panic
+	// handle Panic
 	s.router.Use(s.reportPanic)
-	// Log Request
+	// log Request
 	s.router.Use(s.logRequest)
-	// Statics
+	// translate
+	s.router.Use(s.translate)
+	// statics
 	s.serveStatics()
-	// Routes
+	// routes
+	s.registerNotificationsRoutes()
 	s.registerUserRoutes()
 	s.registerSignUpRoutes()
+	s.registerSignInRoutes()
 	return s
 }
 
@@ -61,16 +67,9 @@ func (s *Server) serveStatics() {
 // Options
 
 func WithTimeout(timeout time.Duration) Option {
-	return func(server *Server) {
-		server.server.WriteTimeout = timeout
+	return func(s *Server) {
+		s.server.WriteTimeout = timeout
 	}
-}
-
-func WithI18n() Option {
-	return func(server *Server) {
-		// Load translations
-	}
-
 }
 
 // Middlewares
@@ -111,6 +110,14 @@ func (s *Server) reportPanic(next http.Handler) http.Handler {
 // Logs
 
 func (s *Server) logRequest(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Log the request
+		log.Printf("[Request] %s %s %s %s", r.RemoteAddr, r.Method, r.URL, r.Proto)
+		next.ServeHTTP(w, r)
+	})
+}
+
+func (s *Server) translate(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Log the request
 		log.Printf("[Request] %s %s %s %s", r.RemoteAddr, r.Method, r.URL, r.Proto)

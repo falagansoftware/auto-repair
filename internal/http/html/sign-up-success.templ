@@ -1,0 +1,11 @@
+package html
+
+import (
+	"github.com/falagansoftware/auto-repair/internal"
+	"github.com/falagansoftware/auto-repair/pkg/translator"
+)
+
+templ SignUpSuccess(lang string, i18n translator.LangTranslations) {
+	@SignInPartial(lang, i18n)
+	@Notification(autorepair.Success, i18n["signup-success"])
+}
