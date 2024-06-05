@@ -29,7 +29,7 @@ var translationsFS embed.FS
   - It also accepts optional TranslatorOptions as variadic arguments.
   - The function returns a pointer to the created Translator instance.
 */
-func NewTranslator(path string, options ...TranslatorOptions) *Translator {
+func NewTranslator(options ...TranslatorOptions) *Translator {
 	translator := &Translator{
 		defaultLang:  "en-en",
 		translations: make(map[string]LangTranslations),
@@ -37,7 +37,7 @@ func NewTranslator(path string, options ...TranslatorOptions) *Translator {
 	for _, option := range options {
 		option(&Translator{})
 	}
-	files, _ := translationsFS.ReadDir(path)
+	files, _ := translationsFS.ReadDir(".")
 	for _, file := range files {
 		fileName := file.Name()
 		lang := strings.Split(fileName, ".")[0]
