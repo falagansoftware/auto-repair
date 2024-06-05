@@ -1,4 +1,4 @@
-package gohtmx
+package autorepair
 
 import (
 	"errors"
