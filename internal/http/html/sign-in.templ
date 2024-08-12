@@ -16,7 +16,7 @@ templ SignInPartial(lang string, i18n translator.LangTranslations) {
 		<div class="max-w-md m-auto">
 			<h1 class="text-sky-800 mb-6 text-6xl font-extrabold text-center">{ i18n["app-name"] }</h1>
 			<h1 class="text-gray-500 mb-6 text-4xl text-center">{ i18n["signin"] }</h1>
-			<form hx-post="/signin" hx-ext="json-enc">
+			<form hx-post={ fmt.Sprintf("/signin?lang=%s", lang) } hx-ext="json-enc">
 				<div class="mb-4">
 					@FormInput("email", "text", i18n["email"], "signup-email")
 				</div>

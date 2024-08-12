@@ -1,6 +1,7 @@
 package http
 
 import (
+	"embed"
 	"log"
 	"net/http"
 	"strconv"
@@ -12,6 +13,9 @@ import (
 
 	"github.com/gorilla/mux"
 )
+
+//go:embed assets/styles/*
+var assets embed.FS
 
 type Server struct {
 	server  *http.Server
@@ -60,7 +64,7 @@ func (s *Server) ListenAndServe() error {
 }
 
 func (s *Server) serveStatics() {
-	fs := http.StripPrefix("/assets/", http.FileServer(http.Dir("internal/http/assets")))
+	fs := http.StripPrefix("/", http.FileServer(http.FS(assets)))
 	s.router.PathPrefix("/assets/").Handler(fs)
 }
 
