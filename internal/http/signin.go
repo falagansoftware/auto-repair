@@ -1,11 +1,10 @@
 package http
 
 import (
-	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
-	autorepair "github.com/falagansoftware/auto-repair/internal"
 	"github.com/falagansoftware/auto-repair/internal/http/html"
 )
 
@@ -31,17 +30,19 @@ func (s *Server) handleSignIn(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleSignInData(w http.ResponseWriter, r *http.Request) {
+	//Lang
+	lang := r.URL.Query().Get("lang")
 	// get post payload
-	var userLogin autorepair.UserLogin
-	err := json.NewDecoder(r.Body).Decode(&userLogin)
-	if err != nil {
-		log.Printf("Error parsing form: %v", err)
-	}
-	// validate
-	err = s.Validator.Struct(userLogin)
-	if err != nil {
-		log.Printf("Error validating user: %v", err)
-	}
+	// var userLogin autorepair.UserLogin
+	// err := json.NewDecoder(r.Body).Decode(&userLogin)
+	// if err != nil {
+	// 	log.Printf("Error parsing form: %v", err)
+	// }
+	// // validate
+	// err = s.Validator.Struct(userLogin)
+	// if err != nil {
+	// 	log.Printf("Error validating user: %v", err)
+	// }
 	// get user
 	// check hash password
 	// hash, err := crypt.CheckPasswordHash(user.Password,)
@@ -55,10 +56,9 @@ func (s *Server) handleSignInData(w http.ResponseWriter, r *http.Request) {
 	// 	log.Printf("Error creating user: %v", err)
 	// }
 	// render Users
-	// redirect to login
-	// http.RedirectHandler("/signin", http.StatusSeeOther)
+	w.Header().Set("HX-Redirect", fmt.Sprintf("/users?lang=%s", lang))
 	// err = view.Render(r.Context(), w)
-	if err != nil {
-		log.Printf("Internal Server Error: %v", err)
-	}
+	// if err != nil {
+	// 	log.Printf("Internal Server Error: %v", err)
+	// }
 }
