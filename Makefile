@@ -86,7 +86,7 @@ build/go:
 
 ## run: run the  application
 .PHONY: run
-run: clean/templ build/templ build
+run: build/tailwind build/templ build/go
 	/tmp/bin/${BINARY_NAME}
 
 ## run/live: run the application with reloading on file changes
@@ -110,6 +110,10 @@ run/live:
 push: tidy audit no-dirty
 	git push
 
+## build/production: creates a binary file for production
+.PHONY: build/production
+build/production: build/tailwind build/templ 
+	go build -o=./dist/bin/${BINARY_NAME} ${MAIN_PACKAGE_PATH}
 ## production/deploy: deploy the application to production
 # .PHONY: production/deploy
 # production/deploy: confirm tidy audit no-dirty
