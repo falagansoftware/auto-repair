@@ -1,10 +1,14 @@
 package html
 
-templ Layout() {
+import (
+	"github.com/falagansoftware/auto-repair/pkg/translator"
+)
+
+templ Layout(i18n translator.LangTranslations) {
 	@Index() {
 		<div class="w-full min-h-screen">
 			<!-- Header -->
-			@Header()
+			@Header(i18n)
 			<!-- Middle Container -->
 			<div class="grow">
 				<div class="container mx-auto pt-0 sm:pt-8">
@@ -12,28 +16,28 @@ templ Layout() {
 				</div>
 			</div>
 			// <!-- Footer -->
-			// @Footer()
+			@Footer()
 		</div>
 	}
 }
 
-templ Header() {
+templ Header(i18n translator.LangTranslations) {
 	<header class="h-20 bg-sky-800 text-white p-2 flex justify-between items-center">
-		<h3>auto-repair6</h3>
-		<h3>options</h3>
+		<h1 class="text-white text-3xl font-extrabold text-center">{ i18n["app-name"] }</h1>
+		<a class="text-white text-sm font-extrabold text-center" href="/signin">logout</a>
 	</header>
 }
 
-// templ Footer() {
-// 	<footer class="bg-gray-800 text-white py-4">
-// 		<div class="container mx-auto">
-// 			<a href="#" class="footer__link">About</a>
-// 			<a href="#" class="footer__link">Terms of Service</a>
-// 			<a href="#" class="footer__link">Privacy Policy</a>
-// 			<a href="#" class="footer__link">Help Center</a>
-// 			<p>Company Name</p>
-// 			<p>123 Main Street, City, Country</p>
-// 			<small>&copy; 2024 Company Name. All rights reserved.</small>
-// 		</div>
-// 	</footer>
-// }
+templ Footer() {
+	<footer class="bg-sky-800 text-white py-4">
+		<div class="container mx-auto">
+			<a href="#" class="footer__link">About</a>
+			<a href="#" class="footer__link">Terms of Service</a>
+			<a href="#" class="footer__link">Privacy Policy</a>
+			<a href="#" class="footer__link">Help Center</a>
+			<p>Company Name</p>
+			<p>123 Main Street, City, Country</p>
+			<small>&copy; 2024 Company Name. All rights reserved.</small>
+		</div>
+	</footer>
+}

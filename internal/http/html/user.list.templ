@@ -8,7 +8,7 @@ import (
 var fields = []string{"name", "surname", "email", "created_at", "updated_at", "active"}
 
 templ UserList(users []*autorepair.User, sortField string, sortOrder string, i18n translator.LangTranslations) {
-	@Layout() {
+	@Layout(i18n) {
 		<div class="grid grid-cols-1">
 			<div class="grid grid-cols-1 p-4 sm:flex sm:justify-between sm:pb-3">
 				<h4 class="text-2xl font-extrabold align-middle pb-2 sm:pb-0">{ i18n["users"] }</h4>
@@ -31,7 +31,7 @@ templ UserListHeader(fields []string, sortField string, order string, i18n trans
 			for _, field := range fields {
 				if field == sortField {
 					if order == "ASC" {
-						<th class={ "text-left min-w-44 sm:min-w-64 stiky top-0 bg-white",templ.KV("hidden sm:table-cell", field != "name" && field != "surname") } hx-get={ "/users/filter?sort=" + field + "&order=DESC" } hx-trigger="click" hx-target="#users-list" hx-swap="outerHTML">
+						<th class={ "text-left min-w-44 sm:min-w-60 stiky top-0 bg-white",templ.KV("hidden sm:table-cell", field != "name" && field != "surname") } hx-get={ "/users/filter?sort=" + field + "&order=DESC" } hx-trigger="click" hx-target="#users-list" hx-swap="outerHTML">
 							<span class="flex justify-between align-middle">
 								<h2>{ i18n[field] }</h2>
 								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-4 mt-1">
@@ -40,7 +40,7 @@ templ UserListHeader(fields []string, sortField string, order string, i18n trans
 							</span>
 						</th>
 					} else {
-						<th class={ "text-left min-w-44 sm:min-w-64 stiky top-0 bg-white",templ.KV("hidden sm:table-cell", field != "name" && field != "surname") } hx-get={ "/users/filter" } hx-trigger="click" hx-target="#users-list" hx-swap="outerHTML">
+						<th class={ "text-left min-w-44 sm:min-w-60 stiky top-0 bg-white",templ.KV("hidden sm:table-cell", field != "name" && field != "surname") } hx-get={ "/users/filter" } hx-trigger="click" hx-target="#users-list" hx-swap="outerHTML">
 							<span class="flex justify-between align-middle">
 								<h2>{ i18n[field] }</h2>
 								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-4 mt-1">
@@ -50,7 +50,7 @@ templ UserListHeader(fields []string, sortField string, order string, i18n trans
 						</th>
 					}
 				} else {
-					<th class={ "text-left min-w-44 sm:min-w-64 stiky top-0 bg-white",templ.KV("hidden sm:table-cell", field != "name" && field != "surname") } hx-get={ "/users/filter?sort=" + field + "&order=ASC" } hx-trigger="click" hx-target="#users-list" hx-swap="outerHTML">
+					<th class={ "text-left min-w-44 sm:min-w-60 stiky top-0 bg-white",templ.KV("hidden sm:table-cell", field != "name" && field != "surname") } hx-get={ "/users/filter?sort=" + field + "&order=ASC" } hx-trigger="click" hx-target="#users-list" hx-swap="outerHTML">
 						<h2>{ i18n[field] }</h2>
 					</th>
 				}
@@ -62,7 +62,7 @@ templ UserListHeader(fields []string, sortField string, order string, i18n trans
 templ UserListBody(users []*autorepair.User) {
 	<tbody>
 		for _, user := range users {
-			<tr class="h-20 border-b hover:bg-sky-800 cursor-pointer">
+			<tr class="h-20 border-b hover:bg-sky-50 cursor-pointer">
 				<td class="text-left">
 					<svg hx-delete xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
 						<path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"></path>
@@ -93,7 +93,7 @@ templ UserListBody(users []*autorepair.User) {
 }
 
 templ UserListSync(users []*autorepair.User, sortField string, sortOrder string, i18n translator.LangTranslations) {
-	<table id="users-list" class="table-fixed">
+	<table id="users-list" class="table-auto">
 		@UserListHeader(fields, sortField, sortOrder, i18n)
 		@UserListBody(users)
 	</table>
