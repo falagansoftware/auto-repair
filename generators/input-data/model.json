@@ -1,0 +1,19 @@
+{
+    "Model": {
+        "Name": "Customer",
+        "Properties": [
+            {
+                "Name": "id",
+                "Type": "uuid"
+            },
+            {
+                "Name": "name",
+                "Type": "string"
+            },
+            {
+                "Name": "fiscalName",
+                "Type": "string"
+            }
+        ]
+    }
+}
